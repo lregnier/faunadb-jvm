@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static java.lang.String.format;
 
@@ -64,6 +65,7 @@ public final class Connection implements AutoCloseable {
     private String authToken;
     private AsyncHttpClient client;
     private MetricRegistry metricRegistry;
+    private boolean enableTxnTimePassthrough = true;
 
     private Builder() {
     }
@@ -126,6 +128,11 @@ public final class Connection implements AutoCloseable {
       return this;
     }
 
+    public Builder enableTxnTimePassthrough(boolean enabled) {
+      this.enableTxnTimePassthrough = enabled;
+      return this;
+    }
+
     /**
      * Returns a newly constructed {@link Connection} with configuration based on the settings of this {@link Builder}.
      */
@@ -156,7 +163,7 @@ public final class Connection implements AutoCloseable {
       else
         root = faunaRoot;
 
-      return new Connection(root, authToken, new RefAwareHttpClient(httpClient), registry);
+      return new Connection(root, authToken, new RefAwareHttpClient(httpClient), registry, enableTxnTimePassthrough);
     }
   }
 
@@ -168,16 +175,19 @@ public final class Connection implements AutoCloseable {
   private final String authHeader;
   private final RefAwareHttpClient client;
   private final MetricRegistry registry;
+  private final boolean enableTxnTimePassthrough;
 
   private final Logger log = LoggerFactory.getLogger(getClass());
   private final ObjectMapper json = new ObjectMapper();
   private final AtomicBoolean closed = new AtomicBoolean(false);
+  private final AtomicLong txnTime = new AtomicLong(0L);
 
-  private Connection(URL faunaRoot, String authToken, RefAwareHttpClient client, MetricRegistry registry) {
+  private Connection(URL faunaRoot, String authToken, RefAwareHttpClient client, MetricRegistry registry, boolean enableTxnTimePassthrough) {
     this.faunaRoot = faunaRoot;
     this.authHeader = generateAuthHeader(authToken);
     this.client = client;
     this.registry = registry;
+    this.enableTxnTimePassthrough = enableTxnTimePassthrough;
   }
 
   /**
@@ -189,7 +199,7 @@ public final class Connection implements AutoCloseable {
    */
   public Connection newSessionConnection(String authToken) {
     if (client.retain())
-      return new Connection(faunaRoot, authToken, client, registry);
+      return new Connection(faunaRoot, authToken, client, registry, enableTxnTimePassthrough);
     else
       throw new IllegalStateException("Can not create a session connection from a closed http connection");
   }
@@ -294,9 +304,17 @@ public final class Connection implements AutoCloseable {
     final Timer.Context ctx = registry.timer("fauna-request").time();
     final SettableFuture<Response> rv = SettableFuture.create();
 
-    client.prepareRequest(request)
-      .addHeader("Authorization", authHeader)
-      .execute(new AsyncCompletionHandler<Response>() {
+    AsyncHttpClient.BoundRequestBuilder req = client.prepareRequest(request)
+      .addHeader("Authorization", authHeader);
+
+    if (enableTxnTimePassthrough) {
+      long time = txnTime.get();
+      if (time > 0) {
+        req = req.setHeader("X-Last-Seen-Txn", Long.toString(time));
+      }
+    }
+
+    req.execute(new AsyncCompletionHandler<Response>() {
         @Override
         public void onThrowable(Throwable t) {
           ctx.stop();
@@ -308,6 +326,24 @@ public final class Connection implements AutoCloseable {
         public Response onCompleted(Response response) throws Exception {
           ctx.stop();
           rv.set(response);
+          if (enableTxnTimePassthrough) {
+            String txnTimeHeader = response.getHeader("X-Txn-Time");
+            if (txnTimeHeader != null) {
+              long newTxnTime = Long.valueOf(txnTimeHeader);
+              boolean cas;
+              do {
+                long oldTxnTime = txnTime.get();
+
+                if (oldTxnTime < newTxnTime) {
+                  cas = txnTime.compareAndSet(oldTxnTime, newTxnTime);
+                } else {
+                  // Another query advanced the txnTime past this one.
+                  break;
+                }
+              } while(!cas);
+            }
+
+          }
           logSuccess(request, response);
           return response;
         }
