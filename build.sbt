@@ -1,5 +1,3 @@
-import de.johoop.jacoco4sbt.XMLReport
-
 val driverVersion = "2.0.1-SNAPSHOT"
 val asyncHttpClientVersion = "1.9.39"
 val guavaVersion = "19.0"
@@ -10,6 +8,7 @@ val jodaTimeVersion = "2.9.4"
 val jodaConvert = "1.8.1"
 val scalaDefaultVersion = "2.12.2"
 val scalaVersions = Seq("2.11.8", scalaDefaultVersion)
+val jacocoFormats = Seq(JacocoReportFormats.ScalaHTML, JacocoReportFormats.XML)
 
 val javaDocUrl = "http://docs.oracle.com/javase/7/docs/api/"
 val asyncHttpClientDocUrl = s"http://static.javadoc.io/com.ning/async-http-client/$asyncHttpClientVersion/"
@@ -71,7 +70,8 @@ lazy val root = (project in file("."))
     name := "faunadb-jvm-parent",
     organization := "com.faunadb",
     crossPaths := false,
-    autoScalaLibrary := false
+    autoScalaLibrary := false,
+    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB JVM Coverage Report", formats = jacocoFormats)
   )
   .aggregate(common, scala, javaDsl, java, javaAndroid)
 
@@ -100,14 +100,15 @@ lazy val common = project.in(file("faunadb-common"))
       "org.slf4j" % "slf4j-api" % "1.7.7",
       "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
       "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
-    )
+    ),
+
+    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB JVM Common Coverage Report", formats = jacocoFormats)
   )
 
 crossScalaVersions := scalaVersions
 
 lazy val scala = project.in(file("faunadb-scala"))
   .dependsOn(common)
-  .settings(jacoco.settings)
   .settings(publishSettings : _*)
   .settings(
     name := "faunadb-scala",
@@ -142,7 +143,8 @@ lazy val scala = project.in(file("faunadb-scala"))
         findDep("joda-time", "joda-time") -> url(jodaDocUrl))
     },
 
-    jacoco.reportFormats in jacoco.Config := Seq(XMLReport()))
+    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB Scala Coverage Report", formats = jacocoFormats)
+  )
 
 lazy val javaDsl = project.in(file("faunadb-java-dsl"))
   .settings(publishSettings: _*)
@@ -174,12 +176,13 @@ lazy val javaDsl = project.in(file("faunadb-java-dsl"))
       "com.novocode" % "junit-interface" % "0.11" % "test",
       "org.hamcrest" % "hamcrest-library" % "1.3" % "test",
       "junit" % "junit" % "4.12" % "test"
-    )
+    ),
+
+    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB Java DSL Coverage Report", formats = jacocoFormats)
   )
 
 lazy val java = project.in(file("faunadb-java"))
   .dependsOn(common, javaDsl % "test->test;compile->compile")
-  .settings(jacoco.settings)
   .settings(publishSettings: _*)
   .settings(
     name := "faunadb-java",
@@ -212,7 +215,8 @@ lazy val java = project.in(file("faunadb-java"))
       "org.hamcrest" % "hamcrest-library" % "1.3" % "test",
       "junit" % "junit" % "4.12" % "test"
     ),
-    jacoco.reportFormats in jacoco.Config := Seq(XMLReport())
+
+    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB Java Coverage Report", formats = jacocoFormats)
   )
 
 lazy val javaAndroid = project.in(file("faunadb-android"))
@@ -246,6 +250,8 @@ lazy val javaAndroid = project.in(file("faunadb-android"))
       "org.hamcrest" % "hamcrest-library" % "1.3" % "test",
       "junit" % "junit" % "4.12" % "test"
     ),
+
+    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB Android Coverage Report", formats = jacocoFormats),
 
     platformTarget in Android := "android-16",
     buildToolsVersion in Android := Some("26.0.0"),
