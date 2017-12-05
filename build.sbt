@@ -8,7 +8,7 @@ val jodaTimeVersion = "2.9.4"
 val jodaConvert = "1.8.1"
 val scalaDefaultVersion = "2.12.2"
 val scalaVersions = Seq("2.11.8", scalaDefaultVersion)
-val jacocoFormats = Seq(JacocoReportFormats.ScalaHTML, JacocoReportFormats.XML)
+val jacocoFormats = Seq(JacocoReportFormats.HTML, JacocoReportFormats.XML)
 
 val javaDocUrl = "http://docs.oracle.com/javase/7/docs/api/"
 val asyncHttpClientDocUrl = s"http://static.javadoc.io/com.ning/async-http-client/$asyncHttpClientVersion/"
@@ -143,7 +143,8 @@ lazy val scala = project.in(file("faunadb-scala"))
         findDep("joda-time", "joda-time") -> url(jodaDocUrl))
     },
 
-    jacocoReportSettings := JacocoReportSettings(title = "FaunaDB Scala Coverage Report", formats = jacocoFormats)
+    jacocoExcludes := Seq("**/*"),
+    jacocoReportSettings := JacocoReportSettings(formats = Seq.empty)
   )
 
 lazy val javaDsl = project.in(file("faunadb-java-dsl"))

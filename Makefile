@@ -25,7 +25,10 @@ test:
 	sbt test
 
 coverage:
-	sbt jacoco
+	# jacocoAggregate doesn't work atm due to conflicting classes between
+	# faunadb-java and faunadb-android
+	sbt coverage jacoco coverageReport
+	sbt coverageAggregate
 
 jenkins-test: coverage
 
