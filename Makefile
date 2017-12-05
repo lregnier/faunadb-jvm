@@ -30,7 +30,10 @@ coverage:
 	sbt coverage jacoco coverageReport
 	sbt coverageAggregate
 
-jenkins-test: coverage
+jenkins-test:
+	sbt clean
+	sbt coverage jacoco coverageReport
+	sbt coverageAggregate
 
 docker-wait:
 	dockerize -wait $(FAUNA_SCHEME)://$(FAUNA_DOMAIN):$(FAUNA_PORT)/ping -timeout $(FAUNA_TIMEOUT)
