@@ -109,6 +109,9 @@ package object query {
   private def unwrapPairs(exprs: Seq[(String, Expr)]) =
     exprs map { t => (t._1, t._2.value) }
 
+  private def optional(pairs: (String, Value)*): Seq[(String, Value)] =
+    pairs filter { _._2 != NullV }
+
   // Values
 
   /**
@@ -333,11 +336,8 @@ package object query {
    *
    * '''Reference''': [[https://fauna.com/documentation/queries#read_functions]]
    */
-  def Get(resource: Expr): Expr =
-    Expr(ObjectV("get" -> resource.value))
-
-  def Get(resource: Expr, ts: Expr): Expr =
-    Expr(ObjectV("get" -> resource.value, "ts" -> ts.value))
+  def Get(resource: Expr, ts: Expr = NullV): Expr =
+    Expr(ObjectV(("get" -> resource.value) +: optional("ts" -> ts.value): _*))
 
   /**
     * A KeyFromSecret expression.
@@ -355,28 +355,19 @@ package object query {
   def Paginate(
     resource: Expr,
     cursor: Cursor = NoCursor,
-    ts: Expr = Expr(NullV),
-    size: Expr = Expr(NullV),
-    sources: Expr = Expr(NullV),
-    events: Expr = Expr(NullV)): Expr = {
+    ts: Expr = NullV,
+    size: Expr = NullV,
+    sources: Expr = NullV,
+    events: Expr = NullV): Expr = {
 
-    val call = List.newBuilder[(String, Value)]
-    call += "paginate" -> resource.value
-
-    cursor match {
-      case b: Before => call += "before" -> b.expr.value
-      case a: After => call += "after" -> a.expr.value
-      case _ => ()
+    val c = cursor match {
+      case b: Before => "before" -> b.expr.value
+      case a: After => "after" -> a.expr.value
+      case _ => "" -> NullV
     }
 
-    val nullExpr = Expr(NullV)
-
-    if (ts != nullExpr) call += "ts" -> ts.value
-    if (size != nullExpr) call += "size" -> size.value
-    if (events != nullExpr) call += "events" -> events.value
-    if (sources != nullExpr) call += "sources" -> sources.value
-
-    Expr(ObjectV(call.result: _*))
+    val opts = optional(c, "ts" -> ts.value, "size" -> size.value, "events" -> events.value, "sources" -> sources.value)
+    Expr(ObjectV(("paginate" -> resource.value) +: opts: _*))
   }
 
   /**
@@ -384,11 +375,8 @@ package object query {
    *
    * '''Reference''': [[https://fauna.com/documentation/queries#read_functions]]
    */
-  def Exists(ref: Expr): Expr =
-    Expr(ObjectV("exists" -> ref.value))
-
-  def Exists(ref: Expr, ts: Expr): Expr =
-    Expr(ObjectV("exists" -> ref.value, "ts" -> ts.value))
+  def Exists(ref: Expr, ts: Expr = NullV): Expr =
+    Expr(ObjectV(("exists" -> ref.value) +: optional("ts" -> ts.value): _*))
 
   // Write Functions
 
@@ -601,25 +589,19 @@ package object query {
    *
    * '''Reference''': [[https://fauna.com/documentation/queries#string_functions]]
    */
-  def Concat(term: Expr): Expr =
-    Expr(ObjectV("concat" -> term.value))
-
-  def Concat(term: Expr, separator: Expr): Expr =
-    Expr(ObjectV("concat" -> term.value, "separator" -> separator.value))
+  def Concat(term: Expr, separator: Expr = NullV): Expr =
+    Expr(ObjectV(("concat" -> term.value) +: optional("separator" -> separator.value): _*))
 
   /**
    * A Casefold expression.
    *
    * '''Reference''': [[https://fauna.com/documentation/queries#string_functions]]
    */
-  def Casefold(term: Expr): Expr =
-    Expr(ObjectV("casefold" -> term.value))
-
   def Casefold(term: Expr, normalizer: Normalizer): Expr =
     Casefold(term, normalizer.expr)
 
-  def Casefold(term: Expr, normalizer: Expr): Expr =
-    Expr(ObjectV("casefold" -> term.value, "normalizer" -> normalizer.value))
+  def Casefold(term: Expr, normalizer: Expr = NullV): Expr =
+    Expr(ObjectV(("casefold" -> term.value) +: optional("normalizer" -> normalizer.value): _*))
 
   /**
     * A NGram expression.
@@ -627,7 +609,7 @@ package object query {
     * '''Reference''': [[https://fauna.com/documentation/queries#string_functions]]
     */
   def NGram(terms: Expr, min: Expr = NullV, max: Expr = NullV): Expr =
-    Expr(ObjectV(Seq("ngram" -> terms.value, "min" -> min.value, "max" -> max.value) filter(_._2 != NullV): _*))
+    Expr(ObjectV(("ngram" -> terms.value) +: optional("min" -> min.value, "max" -> max.value): _*))
 
   // Time Functions
 
@@ -682,64 +664,32 @@ package object query {
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
     */
-  def Class(name: Expr): Expr =
-    Expr(ObjectV("class" -> name.value))
-
-  /**
-    * A Class expression.
-    *
-    * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
-    */
-  def Class(name: Expr, scope: Expr): Expr =
-    Expr(ObjectV("class" -> name.value, "scope" -> scope.value))
+  def Class(name: Expr, scope: Expr = NullV): Expr =
+    Expr(ObjectV(("class" -> name.value) +: optional("scope" -> scope.value): _*))
 
   /**
     * A Database expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
     */
-  def Database(name: Expr): Expr =
-    Expr(ObjectV("database" -> name.value))
-
-  /**
-    * A Database expression.
-    *
-    * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
-    */
-  def Database(name: Expr, scope: Expr): Expr =
-    Expr(ObjectV("database" -> name.value, "scope" -> scope.value))
+  def Database(name: Expr, scope: Expr = NullV): Expr =
+    Expr(ObjectV(("database" -> name.value) +: optional("scope" -> scope.value): _*))
 
   /**
     * An Index expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
     */
-  def Index(name: Expr): Expr =
-    Expr(ObjectV("index" -> name.value))
-
-  /**
-    * An Index expression.
-    *
-    * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
-    */
-  def Index(name: Expr, scope: Expr): Expr =
-    Expr(ObjectV("index" -> name.value, "scope" -> scope.value))
+  def Index(name: Expr, scope: Expr = NullV): Expr =
+    Expr(ObjectV(("index" -> name.value) +: optional("scope" -> scope.value): _*))
 
   /**
     * A Function expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
     */
-  def Function(name: Expr): Expr =
-    Expr(ObjectV("function" -> name.value))
-
-  /**
-    * A Function expression.
-    *
-    * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
-    */
-  def Function(name: Expr, scope: Expr): Expr =
-    Expr(ObjectV("function" -> name.value, "scope" -> scope.value))
+  def Function(name: Expr, scope: Expr = NullV): Expr =
+    Expr(ObjectV(("function" -> name.value) +: optional("scope" -> scope.value): _*))
 
   /**
    * An Equals expression.
@@ -762,11 +712,8 @@ package object query {
    *
    * '''Reference''': [[https://fauna.com/documentation/queries#misc_functions]]
    */
-  def Select(path: Expr, from: Expr): Expr =
-    Expr(ObjectV("select" -> path.value, "from" -> from.value))
-
-  def Select(path: Expr, from: Expr, default: Expr): Expr =
-    Expr(ObjectV("select" -> path.value, "from" -> from.value, "default" -> default.value))
+  def Select(path: Expr, from: Expr, default: Expr = NullV): Expr =
+    Expr(ObjectV(Seq("select" -> path.value, "from" -> from.value) ++ optional("default" -> default.value): _*))
 
   /**
     * A SelectAll expression.

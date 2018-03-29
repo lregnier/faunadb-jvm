@@ -1,5 +1,6 @@
 2.2.0-SNAPSHOT
 * Adds support to NGram() function
+* Removes unnecessary function overloads
 
 2.1.0
 * Adds support to Abort() function
