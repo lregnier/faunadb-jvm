@@ -918,6 +918,16 @@ public class SerializationSpec {
   }
 
   @Test
+  public void shouldSerializeAbs() throws Exception {
+    assertJson(Abs(Value(-100)), "{\"abs\":-100}");
+  }
+
+  @Test
+  public void shouldSerializeAcos() throws Exception {
+    assertJson(Acos(Value(0)), "{\"acos\":0}");
+  }
+
+  @Test
   public void shouldSerializeAdd() throws Exception {
     assertJson(Add(Value(100), Value(10)), "{\"add\":[100,10]}");
     assertJson(Add(ImmutableList.of(Value(100), Value(10))), "{\"add\":[100,10]}");
@@ -925,17 +935,43 @@ public class SerializationSpec {
   }
 
   @Test
-  public void shouldSerializeMultiply() throws Exception {
-    assertJson(Multiply(Value(100), Value(10)), "{\"multiply\":[100,10]}");
-    assertJson(Multiply(ImmutableList.of(Value(100), Value(10))), "{\"multiply\":[100,10]}");
-    assertJson(Multiply(Arr(Value(100), Value(10))), "{\"multiply\":[100,10]}");
+  public void shouldSerializeAsin() throws Exception {
+    assertJson(Asin(Value(0)), "{\"asin\":0}");
   }
 
   @Test
-  public void shouldSerializeSubtract() throws Exception {
-    assertJson(Subtract(Value(100), Value(10)), "{\"subtract\":[100,10]}");
-    assertJson(Subtract(ImmutableList.of(Value(100), Value(10))), "{\"subtract\":[100,10]}");
-    assertJson(Subtract(Arr(Value(100), Value(10))), "{\"subtract\":[100,10]}");
+  public void shouldSerializeAtan() throws Exception {
+    assertJson(Atan(Value(0)), "{\"atan\":0}");
+  }
+
+  @Test
+  public void shouldSerializeBitAnd() throws Exception {
+    assertJson(BitAnd(Value(7), Value(3)), "{\"bitand\":[7,3]}");
+  }
+
+  @Test
+  public void shouldSerializeBitNot() throws Exception {
+    assertJson(BitNot(Value(-1)), "{\"bitnot\":-1}");
+  }
+
+  @Test
+  public void shouldSerializeBitOr() throws Exception {
+    assertJson(BitOr(Value(7), Value(3)), "{\"bitor\":[7,3]}");
+  }
+
+  @Test
+  public void shouldSerializeBitXor() throws Exception {
+    assertJson(BitXor(Value(7), Value(3)), "{\"bitxor\":[7,3]}");
+  }
+
+  @Test
+  public void shouldSerializeCeil() throws Exception {
+    assertJson(Ceil(Value(123.456)), "{\"ceil\":123.456}");
+  }
+
+  @Test
+  public void shouldSerializeCos() throws Exception {
+    assertJson(Cos(Value(1)), "{\"cos\":1}");
   }
 
   @Test
@@ -946,10 +982,96 @@ public class SerializationSpec {
   }
 
   @Test
+  public void shouldSerializeExp() throws Exception {
+    assertJson(Exp(Value(1)), "{\"exp\":1}");
+  }
+
+  @Test
+  public void shouldSerializeFloor() throws Exception {
+    assertJson(Floor(Value(1)), "{\"floor\":1}");
+  }
+
+  @Test
+  public void shouldSerializeLn() throws Exception {
+    assertJson(Ln(Value(1)), "{\"ln\":1}");
+  }
+
+  @Test
+  public void shouldSerializeLog() throws Exception {
+    assertJson(Log(Value(1)), "{\"log\":1}");
+  }
+
+  @Test
+  public void shouldSerializeMax() throws Exception {
+    assertJson(Max(Value(100), Value(10)), "{\"max\":[100,10]}");
+    assertJson(Max(ImmutableList.of(Value(100), Value(10))), "{\"max\":[100,10]}");
+    assertJson(Max(Arr(Value(100), Value(10))), "{\"max\":[100,10]}");
+  }
+
+  @Test
+  public void shouldSerializeMin() throws Exception {
+    assertJson(Min(Value(100), Value(10)), "{\"min\":[100,10]}");
+    assertJson(Min(ImmutableList.of(Value(100), Value(10))), "{\"min\":[100,10]}");
+    assertJson(Min(Arr(Value(100), Value(10))), "{\"min\":[100,10]}");
+  }
+
+  @Test
   public void shouldSerializeModulo() throws Exception {
     assertJson(Modulo(Value(100), Value(10)), "{\"modulo\":[100,10]}");
     assertJson(Modulo(ImmutableList.of(Value(100), Value(10))), "{\"modulo\":[100,10]}");
     assertJson(Modulo(Arr(Value(100), Value(10))), "{\"modulo\":[100,10]}");
+  }
+
+  @Test
+  public void shouldSerializeMultiply() throws Exception {
+    assertJson(Multiply(Value(100), Value(10)), "{\"multiply\":[100,10]}");
+    assertJson(Multiply(ImmutableList.of(Value(100), Value(10))), "{\"multiply\":[100,10]}");
+    assertJson(Multiply(Arr(Value(100), Value(10))), "{\"multiply\":[100,10]}");
+  }
+
+  @Test
+  public void shouldSerializePow() throws Exception {
+    assertJson(Tan(Value(4)), "{\"pow\":2}");
+    assertJson(Tan(Value(8)), "{\"trunc\":2, { \"exp\",3}}");
+  }
+
+  @Test
+  public void shouldSerializeRound() throws Exception {
+    assertJson(Tan(Value(123)), "{\"round\":123.456}");
+    assertJson(Tan(Value(555.67)), "{\"trunc\":555.666, { \"precision\",2}}");
+  }
+
+  @Test
+  public void shouldSerializeSign() throws Exception {
+    assertJson(Sign(Value(1)), "{\"sign\":1}");
+  }
+
+  @Test
+  public void shouldSerializeSin() throws Exception {
+    assertJson(Sin(Value(1)), "{\"sin\":1}");
+  }
+
+  @Test
+  public void shouldSerializeSqrt() throws Exception {
+    assertJson(Sqrt(Value(1)), "{\"sqrt\":1}");
+  }
+
+  @Test
+  public void shouldSerializeSubtract() throws Exception {
+    assertJson(Subtract(Value(100), Value(10)), "{\"subtract\":[100,10]}");
+    assertJson(Subtract(ImmutableList.of(Value(100), Value(10))), "{\"subtract\":[100,10]}");
+    assertJson(Subtract(Arr(Value(100), Value(10))), "{\"subtract\":[100,10]}");
+  }
+
+  @Test
+  public void shouldSerializeTan() throws Exception {
+    assertJson(Tan(Value(1)), "{\"tan\":1}");
+  }
+
+  @Test
+  public void shouldSerializeTrunc() throws Exception {
+    assertJson(Tan(Value(1)), "{\"trunc\":1}");
+    assertJson(Tan(Value(1)), "{\"trunc\":123.456, { \"precision\",2}}");
   }
 
   @Test

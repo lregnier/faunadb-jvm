@@ -2246,6 +2246,28 @@ public final class Language {
   }
 
   /**
+   * Computes the abs of a numbers.
+   *
+   * @param value The operand to abs. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Abs(Expr value) {
+    return Fn.apply("abs", value);
+  }
+
+  /**
+   * Computes the acos of a numbers.
+   *
+   * @param value The operand to acos. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Acos(Expr value) {
+    return Fn.apply("acos", value);
+  }
+
+  /**
    * Computes the sum of a list of numbers.
    *
    * @param values the list of numbers. Type: Array
@@ -2268,47 +2290,124 @@ public final class Language {
   }
 
   /**
-   * Computes the product of a list of numbers.
+   * Computes the asin of a numbers.
    *
-   * @param values the list of numbers. Type: Array
+   * @param value The operand to asin. Type: Number
    * @return a {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    */
-  public static Expr Multiply(List<? extends Expr> values) {
-    return Fn.apply("multiply", varargs(values));
+  public static Expr Asin(Expr value) {
+    return Fn.apply("asin", value);
   }
 
   /**
-   * Computes the product of a list of numbers.
+   * Computes the atan of a numbers.
    *
-   * @param values the list of numbers. Type: Array
+   * @param value The operand to atan. Type: Number
    * @return a {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    */
-  public static Expr Multiply(Expr... values) {
-    return Multiply(ImmutableList.copyOf(values));
+  public static Expr Atan(Expr value) {
+    return Fn.apply("atan", value);
   }
 
   /**
-   * Computes the difference of a list of numbers.
+   * Computes the bitwise and of a list of numbers.
    *
    * @param values the list of numbers. Type: Array
    * @return a {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    */
-  public static Expr Subtract(List<? extends Expr> values) {
-    return Fn.apply("subtract", varargs(values));
+  public static Expr BitAnd(List<? extends Expr> values) {
+    return Fn.apply("bitand", varargs(values));
   }
 
   /**
-   * Computes the difference of a list of numbers.
+   * Computes the sum of a list of numbers.
    *
    * @param values the list of numbers. Type: Array
    * @return a {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    */
-  public static Expr Subtract(Expr... values) {
-    return Subtract(ImmutableList.copyOf(values));
+  public static Expr BitAnd(Expr... values) {
+    return BitAnd(ImmutableList.copyOf(values));
+  }
+
+  /**
+   * Computes the bitwise NOT of a numbers.
+   *
+   * @param value The operand to atan. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr BitNot(Expr value) {
+    return Fn.apply("bitnot", value);
+  }
+
+  /**
+   * Computes the bitwise OR of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr BitOr(List<? extends Expr> values) {
+    return Fn.apply("bitor", varargs(values));
+  }
+
+  /**
+   * Computes the bitwise OR of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr BitOr(Expr... values) {
+    return BitOr(ImmutableList.copyOf(values));
+  }
+
+  /**
+   * Computes the bitwise XOR of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr BitXor(List<? extends Expr> values) {
+    return Fn.apply("bitxor", varargs(values));
+  }
+
+  /**
+   * Computes the bitwise XOR of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr BitXor(Expr... values) {
+    return BitOr(ImmutableList.copyOf(values));
+  }
+
+  /**
+   * Computes the Ceil of a number.
+   *
+   * @param value The operand to ceil. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Ceil(Expr value) {
+    return Fn.apply("ceil", value);
+  }
+
+  /**
+   * Computes the cosine of a numbers.
+   *
+   * @param value The operand to cos. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Cos(Expr value) {
+    return Fn.apply("cos", value);
   }
 
   /**
@@ -2334,6 +2433,94 @@ public final class Language {
   }
 
   /**
+   * Computes the exp of a numbers.
+   *
+   * @param value The operand to exp. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Exp(Expr value) {
+    return Fn.apply("exp", value);
+  }
+
+  /**
+   * Computes the floor of a numbers.
+   *
+   * @param value The operand to floor Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Floor(Expr value) {
+    return Fn.apply("floor", value);
+  }
+
+  /**
+   * Computes the ln of a numbers.
+   *
+   * @param value The operand to ln. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Ln(Expr value) {
+    return Fn.apply("ln", value);
+  }
+
+  /**
+   * Computes the log of a numbers.
+   *
+   * @param value The operand to log. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Log(Expr value) {
+    return Fn.apply("log", value);
+  }
+
+  /**
+   * Computes the max in a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Max(List<? extends Expr> values) {
+    return Fn.apply("max", varargs(values));
+  }
+
+  /**
+   * Computes the max in a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Max(Expr... values) {
+    return Max(ImmutableList.copyOf(values));
+  }
+
+  /**
+   * Computes the min in a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Min(List<? extends Expr> values) {
+    return Fn.apply("min", varargs(values));
+  }
+
+  /**
+   * Computes the min in a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Min(Expr... values) {
+    return Min(ImmutableList.copyOf(values));
+  }
+
+  /**
    * Computes the remainder after division of a list of numbers.
    *
    * @param values the list of numbers. Type: Array
@@ -2353,6 +2540,134 @@ public final class Language {
    */
   public static Expr Modulo(Expr... values) {
     return Modulo(ImmutableList.copyOf(values));
+  }
+
+  /**
+   * Computes the product of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Multiply(List<? extends Expr> values) {
+    return Fn.apply("multiply", varargs(values));
+  }
+
+  /**
+   * Computes the product of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Multiply(Expr... values) {
+    return Multiply(ImmutableList.copyOf(values));
+  }
+
+  /**
+   * Pow to calculate a number raise to the power of some other number
+   *
+   * @param num the base. Type: Number
+   * @param exp the exponent, default 2
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   * @see #Value(double)
+   */
+  public static Expr Pow(Expr num, Expr exp) {
+      return Fn.apply("pow",  num, "exp", exp);
+  }
+
+  /**
+   * Truncate to a given precision
+   *
+   * @param num the number to round. Type: Number
+   * @param precision where to round, default 0
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   * @see #Value(double)
+   */
+  public static Expr Round(Expr num, Expr precision) {
+    return Fn.apply("round",  num, "precision", precision);
+  }
+
+  /**
+   * Computes the sign of a number.
+   *
+   * @param value The operand to log. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Sign(Expr value) {
+    return Fn.apply("sign", value);
+  }
+
+  /**
+   * Computes the Sin of a number.
+   *
+   * @param value The operand to log. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Sin(Expr value) {
+    return Fn.apply("sin", value);
+  }
+
+  /**
+   * Computes the square root of a numbers.
+   *
+   * @param value The operand to log. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Sqrt(Expr value) {
+    return Fn.apply("sqrt", value);
+  }
+
+  /**
+   * Computes the difference of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Subtract(List<? extends Expr> values) {
+    return Fn.apply("subtract", varargs(values));
+  }
+
+  /**
+   * Computes the difference of a list of numbers.
+   *
+   * @param values the list of numbers. Type: Array
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Subtract(Expr... values) {
+    return Subtract(ImmutableList.copyOf(values));
+  }
+  /**
+   * Computes the tangent of a numbers.
+   *
+   * @param value The operand to tan. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Tan(Expr value) {
+    return Fn.apply("tan", value);
+  }
+
+  /**
+   * Truncate to a given precision
+   *
+   * @param num the number to truncate. Type: Number
+   * @param precision where to truncate, default 0
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   */
+  public static Expr Trunc(Expr num, Expr precision) {
+    return Fn.apply("trunc",  num, "precision", precision);
   }
 
   /**
