@@ -995,7 +995,7 @@ public abstract class DslSpec {
   @Test
   public void shouldEvalCos() throws Exception {
     Value res = query(Trunc(Cos(Value(0.5)),Value(2))).get();
-    assertThat(res.to(DOUBLE).get(), equalTo(99.87));
+    assertThat(res.to(DOUBLE).get(), equalTo( 0.87));
   }
 
   @Test
