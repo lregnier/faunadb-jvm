@@ -790,7 +790,7 @@ package object query {
   /**
    * A Select expression.
    *
-   * '''Reference''': [[https://fauna.com/documentation/queries#miscellaneous]]
+   * '''Reference''': [[https://fauna.com/documentation/queries#read-functions]]
    */
   def Select(path: Expr, from: Expr): Expr =
     Expr(ObjectV("select" -> path.value, "from" -> from.value))
@@ -801,10 +801,13 @@ package object query {
   /**
     * A SelectAll expression.
     *
-    * '''Reference''': [[https://fauna.com/documentation/queries#miscellaneous]]
+    * '''Reference''': [[https://fauna.com/documentation/queries#read-functions]]
     */
   def SelectAll(path: Expr, from: Expr): Expr =
     Expr(ObjectV("select_all" -> path.value, "from" -> from.value))
+
+  def SelectAll(path: Expr, from: Expr, default: Expr): Expr =
+    Expr(ObjectV("select_all" -> path.value, "from" -> from.value, "default" -> default.value))
 
   /**
    * An Abs expression.
@@ -1141,4 +1144,28 @@ package object query {
     */
   def Not(term: Expr): Expr =
     Expr(ObjectV("not" -> term.value))
+
+  /**
+    * Casts an expression to a string value, if possible.
+    */
+  def ToString(term: Expr): Expr =
+    Expr(ObjectV("to_string" -> term.value))
+
+  /**
+    * Casts an expression to a numeric value, if possible.
+    */
+  def ToNumber(term: Expr): Expr =
+    Expr(ObjectV("to_number" -> term.value))
+
+  /**
+    * Casts an expression to a time value, if possible.
+    */
+  def ToTime(term: Expr): Expr =
+    Expr(ObjectV("to_time" -> term.value))
+
+  /**
+    * Casts an expression to a data value, if possible.
+    */
+  def ToDate(term: Expr): Expr =
+    Expr(ObjectV("to_date" -> term.value))
 }

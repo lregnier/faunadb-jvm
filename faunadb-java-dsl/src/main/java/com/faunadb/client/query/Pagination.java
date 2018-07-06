@@ -5,7 +5,8 @@ import com.faunadb.client.types.Value;
 import com.faunadb.client.types.Value.LongV;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import org.joda.time.Instant;
+
+import java.time.Instant;
 
 import static com.faunadb.client.util.Objects.requireNonNull;
 
@@ -97,7 +98,6 @@ public final class Pagination extends Expr {
    * @return this {@link Pagination} instance
    * @see Language#Time(Expr)
    * @see Language#Value(Instant)
-   * @see Language#Value(com.faunadb.client.types.time.HighPrecisionTime)
    */
   public Pagination ts(Expr ts) {
     this.ts = Optional.of(ts);
