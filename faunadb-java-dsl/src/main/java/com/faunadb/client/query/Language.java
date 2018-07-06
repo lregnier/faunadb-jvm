@@ -2592,30 +2592,57 @@ public final class Language {
   }
 
   /**
-   * Truncate to a given precision
+   * Round to a given precision and return a Double
    *
-   * @param num the number to round. Type: Number
+   * @param num the number to round. Type: Number/Double
    * @param precision where to round
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    * @see #Value(double)
    */
-  public static Expr Round(Expr num, Expr precision) {
-    return Fn.apply("round",  num, "precision", precision);
+  public static Expr RoundDouble(Expr num, Expr precision) {
+    return Fn.apply("rounddouble",  num, "precision", precision);
   }
 
   /**
-   * Truncate to a given precision
+   * Round to a given precision and return a Double
    *
-   * @param num the number to round to 2 decimal places. Type: Number
+   * @param num the number to round to 2 decimal places. Type: Number/Double
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    * @see #Value(double)
    */
-  public static Expr Round(Expr num) {
-    return Fn.apply("round",  num);
+  public static Expr RoundDouble(Expr num) {
+    return Fn.apply("rounddouble",  num);
+  }
+
+  /**
+   * Round to a given precision and return a Long
+   *
+   * @param num the number to round. Type: Number/Long
+   * @param precision where to round
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   * @see #Value(double)
+   */
+  public static Expr RoundLong(Expr num, Expr precision) {
+    return Fn.apply("roundlong",  num, "precision", precision);
+  }
+
+  /**
+   * Round to a given precision and return a Long
+   *
+   * @param num the number to round to 2 decimal places. Type: Number/Long
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   * @see #Value(double)
+   */
+  public static Expr RoundLong(Expr num) {
+    return Fn.apply("roundlong",  num);
   }
 
   /**
@@ -2684,28 +2711,53 @@ public final class Language {
   }
 
   /**
-   * Truncate to a given precision
+   * Truncate to a given precision and return a Double
    *
-   * @param num the number to truncate. Type: Number
+   * @param num the number to truncate. Type: Number/Double
    * @param precision where to truncate, default 2
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    */
-  public static Expr Trunc(Expr num, Expr precision) {
-    return Fn.apply("trunc",  num, "precision", precision);
+  public static Expr TruncDouble(Expr num, Expr precision) {
+    return Fn.apply("truncdouble",  num, "precision", precision);
   }
 
   /**
-   * Truncate to a given precision
+   * Truncate to a given precision and return a Double
    *
    * @param num the number to truncate to 2 decimal places. Type: Number
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    */
-  public static Expr Trunc(Expr num) {
-    return Fn.apply("trunc",  num);
+  public static Expr TruncDouble(Expr num) {
+    return Fn.apply("truncdouble",  num);
+  }
+
+  /**
+   * Truncate to a given precision and return a Long
+   *
+   * @param num the number to truncate. Type: Number/Long
+   * @param precision where to truncate, default 2
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   */
+  public static Expr TruncLong(Expr num, Expr precision) {
+    return Fn.apply("trunclong",  num, "precision", precision);
+  }
+
+  /**
+   * Truncate to a given precision and return a Long
+   *
+   * @param num the number to truncate to 2 decimal places. Type: Number/Long
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   */
+  public static Expr TruncLong(Expr num) {
+    return Fn.apply("trunclong",  num);
   }
 
   /**

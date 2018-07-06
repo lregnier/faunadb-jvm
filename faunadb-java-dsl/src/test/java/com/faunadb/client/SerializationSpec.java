@@ -1031,14 +1031,20 @@ public class SerializationSpec {
 
   @Test
   public void shouldSerializePow() throws Exception {
-    assertJson(Tan(Value(4)), "{\"pow\":2}");
-    assertJson(Tan(Value(8)), "{\"trunc\":2, { \"exp\",3}}");
+    assertJson(Pow(Value(4)), "{\"pow\":4}");
+    assertJson(Pow(Value(8), Value(3)), "{\"pow\":8, { \"exp\",3}}");
   }
 
   @Test
-  public void shouldSerializeRound() throws Exception {
-    assertJson(Tan(Value(123)), "{\"round\":123.456}");
-    assertJson(Tan(Value(555.67)), "{\"trunc\":555.666, { \"precision\",2}}");
+  public void shouldSerializeRoundDouble() throws Exception {
+    assertJson(RoundDouble(Value(123.456)), "{\"rounddouble\":123.456}");
+    assertJson(RoundDouble(Value(555.666), Value(2)), "{\"rounddouble\":555.666, \"precision\":2}");
+  }
+
+  @Test
+  public void shouldSerializeRoundLong() throws Exception {
+    assertJson(RoundLong(Value(123.456)), "{\"roundlong\":123.456}");
+    assertJson(RoundLong(Value(555.666), Value(2)), "{\"roundlong\":555.666, \"precision\":2}");
   }
 
   @Test
@@ -1069,9 +1075,15 @@ public class SerializationSpec {
   }
 
   @Test
-  public void shouldSerializeTrunc() throws Exception {
-    assertJson(Tan(Value(1)), "{\"trunc\":1}");
-    assertJson(Tan(Value(1)), "{\"trunc\":123.456, { \"precision\",2}}");
+  public void shouldSerializeTruncDouble() throws Exception {
+    assertJson(TruncDouble(Value(1)), "{\"truncdouble\":1}");
+    assertJson(TruncDouble(Value(123.456), Value(2)), "{\"truncdouble\":123.456, \"precision\":2 }");
+  }
+
+  @Test
+  public void shouldSerializeTruncLong() throws Exception {
+    assertJson(TruncLong(Value(1)), "{\"trunclong\":1}");
+    assertJson(TruncLong(Value(123.456), Value(2)), "{\"trunclong\":123.456, \"precision\":2 }");
   }
 
   @Test

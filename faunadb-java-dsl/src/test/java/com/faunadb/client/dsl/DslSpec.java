@@ -940,7 +940,7 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalAcos() throws Exception {
-    Value res = query(Trunc(Acos(Value(0.5)),Value(2))).get();
+    Value res = query(TruncDouble(Acos(Value(0.5)),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(1.04D));
   }
 
@@ -952,13 +952,13 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalAsin() throws Exception {
-    Value res = query(Trunc(Asin(Value(0.5)),Value(2))).get();
+    Value res = query(TruncDouble(Asin(Value(0.5)),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(0.52D));
   }
 
   @Test
   public void shouldEvalAtan() throws Exception {
-    Value res = query(Trunc(Atan(Value(0.5)),Value(2))).get();
+    Value res = query(TruncDouble(Atan(Value(0.5)),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(0.46D));
   }
 
@@ -994,7 +994,7 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalCos() throws Exception {
-    Value res = query(Trunc(Cos(Value(0.5)),Value(2))).get();
+    Value res = query(TruncDouble(Cos(Value(0.5)),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo( 0.87));
   }
 
@@ -1006,7 +1006,7 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalExp() throws Exception {
-    Value res = query(Trunc(Exp(Value(2)), Value(2))).get();
+    Value res = query(TruncDouble(Exp(Value(2)), Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(7.38D));
   }
 
@@ -1018,13 +1018,13 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalLn() throws Exception {
-    Value res = query(Trunc(Ln(Value(2)), Value(2))).get();
+    Value res = query(TruncDouble(Ln(Value(2)), Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(0.69D));
   }
 
   @Test
   public void shouldEvalLog() throws Exception {
-    Value res = query(Trunc(Log(Value(2)), Value(2))).get();
+    Value res = query(TruncDouble(Log(Value(2)), Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(0.30D));
   }
 
@@ -1053,6 +1053,18 @@ public abstract class DslSpec {
   }
 
   @Test
+  public void shouldEvalRoundDouble() throws Exception {
+    Value res = query(RoundDouble(Value(123.666D),Value(2))).get();
+    assertThat(res.to(DOUBLE).get(), equalTo(123.67D));
+  }
+
+  @Test
+  public void shouldEvalRoundLong() throws Exception {
+    Value res = query(RoundLong(Value(123.999D),Value(2))).get();
+    assertThat(res.to(LONG).get(), equalTo(124L));
+  }
+
+  @Test
   public void shouldEvalSign() throws Exception {
     Value res = query(Sign(Value(1))).get();
     assertThat(res.to(LONG).get(), equalTo(1L));
@@ -1060,7 +1072,7 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalSin() throws Exception {
-    Value res = query(Trunc(Sin(Value(0.5)),Value(2))).get();
+    Value res = query(TruncDouble(Sin(Value(0.5)),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(0.47D));
   }
 
@@ -1078,14 +1090,20 @@ public abstract class DslSpec {
 
   @Test
   public void shouldEvalTan() throws Exception {
-    Value res = query(Trunc(Tan(Value(0.5)),Value(2))).get();
+    Value res = query(TruncDouble(Tan(Value(0.5)),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(0.54D));
   }
 
   @Test
-  public void shouldEvalTrunc() throws Exception {
-    Value res = query(Trunc(Value(123.456D),Value(2))).get();
+  public void shouldEvalTruncDouble() throws Exception {
+    Value res = query(TruncDouble(Value(123.456D),Value(2))).get();
     assertThat(res.to(DOUBLE).get(), equalTo(123.45D));
+  }
+
+  @Test
+  public void shouldEvalTruncLong() throws Exception {
+    Value res = query(TruncLong(Value(123.456D),Value(2))).get();
+    assertThat(res.to(LONG).get(), equalTo(123L));
   }
 
   @Test

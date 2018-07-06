@@ -66,6 +66,7 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val dbRef = db(RefField).get
     val key = await(rootClient.query(CreateKey(Obj("database" -> dbRef, "role" -> "server"))))
 
+    println(s"JFMIII ${config("root_url")}  ${key(SecretField).get}")
     client = FaunaClient(endpoint = config("root_url"), secret = key(SecretField).get)
 
     await(client.query(CreateClass(Obj("name" -> "spells"))))
@@ -478,7 +479,7 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val absR = await(absF).to[Long].get
     absR shouldBe 100L
 
-    val acosF = client.query(Trunc(Acos(0.5D), 2))
+    val acosF = client.query(TruncDouble(Acos(0.5D), 2))
     val acosR = await(acosF).to[Double].get
     acosR shouldBe 1.04D
 
@@ -486,11 +487,11 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val addR = await(addF).to[Long].get
     addR shouldBe 110L
 
-    val asinF = client.query(Trunc(Asin(0.5D), 2))
+    val asinF = client.query(TruncDouble(Asin(0.5D), 2))
     val asinR = await(asinF).to[Double].get
     asinR shouldBe 0.52D
 
-    val atanF = client.query(Trunc(Atan(0.5D), 2))
+    val atanF = client.query(TruncDouble(Atan(0.5D), 2))
     val atanR = await(atanF).to[Double].get
     atanR shouldBe 0.46D
 
@@ -514,7 +515,7 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val ceilR = await(ceilF).to[Long].get
     ceilR shouldBe 2L
 
-    val cosF = client.query(Trunc(Cos(0.5D), 2))
+    val cosF = client.query(TruncDouble(Cos(0.5D), 2))
     val cosR = await(cosF).to[Double].get
     cosR shouldBe 0.87D
 
@@ -522,7 +523,7 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val divideR = await(divideF).to[Long].get
     divideR shouldBe 10L
 
-    val expF = client.query(Trunc(Exp(2L), 2))
+    val expF = client.query(TruncDouble(Exp(2L), 2))
     val expR = await(expF).to[Double].get
     expR shouldBe 7.38D
 
@@ -530,11 +531,11 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val floorR = await(floorF).to[Long].get
     floorR shouldBe 1L
 
-    val lnF = client.query(Trunc(Ln(2L),2))
+    val lnF = client.query(TruncDouble(Ln(2L),2))
     val lnR = await(lnF).to[Double].get
     lnR shouldBe 0.69D
 
-    val logF = client.query(Trunc(Log(2L),2))
+    val logF = client.query(TruncDouble(Log(2L),2))
     val logR = await(logF).to[Double].get
     logR shouldBe 0.30D
 
@@ -558,7 +559,7 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val signR = await(signF).to[Long].get
     signR shouldBe 1L
 
-    val sinF = client.query(Trunc(Sin(0.5D), 2))
+    val sinF = client.query(TruncDouble(Sin(0.5D), 2))
     val sinR = await(sinF).to[Double].get
     sinR shouldBe 0.47D
 
@@ -570,13 +571,17 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val subtractR = await(subtractF).to[Long].get
     subtractR shouldBe 90L
 
-    val tanF = client.query(Trunc(Tan(0.5D), 2))
+    val tanF = client.query(TruncDouble(Tan(0.5D), 2))
     val tanR = await(tanF).to[Double].get
     tanR shouldBe 0.54D
 
-    val truncF = client.query(Trunc(123.456D, 2L))
-    val truncR = await(truncF).to[Double].get
-    truncR shouldBe 123.45D
+    val truncDoubleF = client.query(TruncDouble(123.456D, 2L))
+    val truncDoubleR = await(truncDoubleF).to[Double].get
+    truncDoubleR shouldBe 123.45D
+
+    val trunclongF = client.query(TruncLong(123.456D, 2L))
+    val trunclongR = await(trunclongF).to[Long].get
+    trunclongR shouldBe 123
 
   }
 
@@ -664,21 +669,26 @@ class ClientSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
   }
 
   it should "test authentication functions" in {
+    println("JFMIII 1")
     val createF = client.query(Create(Class("spells"), Obj("credentials" -> Obj("password" -> "abcdefg"))))
     val createR = await(createF)
 
+    println("JFMIII 2")
     // Login
     val loginF = client.query(Login(createR(RefField), Obj("password" -> "abcdefg")))
     val secret = await(loginF)(SecretField).get
 
+    println("JFMIII 3")
     // HasIdentity
     val hasIdentity = client.sessionWith(secret)(_.query(HasIdentity()))
     await(hasIdentity).to[Boolean].get shouldBe true
 
+    println("JFMIII 4")
     // Identity
     val identity = client.sessionWith(secret)(_.query(Identity()))
     await(identity).to[RefV].get shouldBe createR(RefField).get
 
+    println("JFMIII 5")
     // Logout
     val loggedOut = client.sessionWith(secret)(_.query(Logout(false)))
     await(loggedOut).to[Boolean].get shouldBe true
