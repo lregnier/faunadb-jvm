@@ -898,6 +898,22 @@ package object query {
     Expr(ObjectV("cos" -> num.value))
 
   /**
+    * A Cosh expression.
+    *
+    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
+    */
+  def Cosh(num: Expr): Expr =
+    Expr(ObjectV("cosh" -> num.value))
+
+  /**
+    * A Degrees expression.
+    *
+    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
+    */
+  def Degrees(num: Expr): Expr =
+    Expr(ObjectV("degrees" -> num.value))
+
+  /**
     * A Divide expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
@@ -920,6 +936,22 @@ package object query {
     */
   def Floor(num: Expr): Expr =
     Expr(ObjectV("floor" -> num.value))
+
+  /**
+    * A Hypot expression.
+    *
+    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
+    */
+  def Hypot(num: Expr): Expr =
+    Expr(ObjectV("hypot" -> num.value))
+
+  /**
+    * A Hypot expression.
+    *
+    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
+    */
+  def Hypot(num: Expr, exp: Expr): Expr =
+    Expr(ObjectV("hypot" -> num.value, "b" -> exp.value))
 
   /**
     * A ln expression.
@@ -986,36 +1018,28 @@ package object query {
     Expr(ObjectV("pow" -> num.value, "exp" -> exp.value))
 
   /**
-    * A RoundDouble expression.
+    * A Radians expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
     */
-  def RoundDouble(num: Expr): Expr =
-    Expr(ObjectV("rounddouble" -> num.value))
+  def Radians(num: Expr): Expr =
+    Expr(ObjectV("radians" -> num.value))
 
   /**
-    * A RoundDouble expression.
+    * A Round expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
     */
-  def RoundDouble(num: Expr, precision: Expr): Expr =
-    Expr(ObjectV("rounddouble" -> num.value, "precision" -> precision.value))
+  def Round(num: Expr): Expr =
+    Expr(ObjectV("round" -> num.value))
 
   /**
-    * A RoundLong expression.
+    * A Round expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
     */
-  def RoundLong(num: Expr): Expr =
-    Expr(ObjectV("roundlong" -> num.value))
-
-  /**
-    * A RoundLong expression.
-    *
-    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
-    */
-  def RoundLong(num: Expr, precision: Expr): Expr =
-    Expr(ObjectV("roundlong" -> num.value, "precision" -> precision.value))
+  def Round(num: Expr, precision: Expr): Expr =
+    Expr(ObjectV("round" -> num.value, "precision" -> precision.value))
 
   /**
     * A sign expression.
@@ -1032,6 +1056,14 @@ package object query {
     */
   def Sin(num: Expr): Expr =
     Expr(ObjectV("sin" -> num.value))
+
+  /**
+    * A sinh expression.
+    *
+    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
+    */
+  def Sinh(num: Expr): Expr =
+    Expr(ObjectV("sinh" -> num.value))
 
   /**
     * A sqrt expression.
@@ -1058,36 +1090,28 @@ package object query {
     Expr(ObjectV("tan" -> num.value))
 
   /**
-    * A TruncDouble expression.
+    * A Tanh expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
     */
-  def TruncDouble(num: Expr): Expr =
-    Expr(ObjectV("truncdouble" -> num.value))
+  def Tanh(num: Expr): Expr =
+    Expr(ObjectV("tanh" -> num.value))
 
   /**
     * A Trunc expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
     */
-  def TruncDouble(num: Expr, precision: Expr): Expr =
-    Expr(ObjectV("truncdouble" -> num.value, "precision" -> precision.value))
+  def Trunc(num: Expr): Expr =
+    Expr(ObjectV("trunc" -> num.value))
 
   /**
-    * A TruncLong expression.
+    * A Trunc expression.
     *
     * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
     */
-  def TruncLong(num: Expr): Expr =
-    Expr(ObjectV("trunclong" -> num.value))
-
-  /**
-    * A TruncLong expression.
-    *
-    * '''Reference''': [[https://fauna.com/documentation/queries#mathematical-functions]]
-    */
-  def TruncLong(num: Expr, precision: Expr): Expr =
-    Expr(ObjectV("trunclong" -> num.value, "precision" -> precision.value))
+  def Trunc(num: Expr, precision: Expr): Expr =
+    Expr(ObjectV("trunc" -> num.value, "precision" -> precision.value))
 
   /**
     * A LT expression.

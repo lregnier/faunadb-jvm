@@ -2421,6 +2421,28 @@ public final class Language {
   }
 
   /**
+   * Computes the hyperbolic cosine of a numbers.
+   *
+   * @param value The operand to cosh. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Cosh(Expr value) {
+    return Fn.apply("cosh", value);
+  }
+
+  /**
+   * Computes the degrees of a numbers.
+   *
+   * @param value The operand to degrees. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Degrees(Expr value) {
+    return Fn.apply("degrees", value);
+  }
+
+  /*
    * Computes the quotient of a list of numbers.
    *
    * @param values the list of numbers. Type: Array
@@ -2473,6 +2495,34 @@ public final class Language {
    */
   public static Expr Ln(Expr value) {
     return Fn.apply("ln", value);
+  }
+
+
+  /**
+   * Hypot to calculate a hypotenuse of a right triangle give the 2 sides
+   *
+   * @param num the base. Type: Number
+   * @param exp the exponent, default 2
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   * @see #Value(double)
+   */
+  public static Expr Hypot(Expr num, Expr exp) {
+    return Fn.apply("hypot",  num, "b", exp);
+  }
+
+  /**
+   * Hypot to calculate a hypotenuse of a isosceles right triangle give side
+   *
+   * @param num the base. Type: Number
+   * @return a new {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   * @see #Value(long)
+   * @see #Value(double)
+   */
+  public static Expr Hypot(Expr num) {
+    return Fn.apply("hypot",  num);
   }
 
   /**
@@ -2602,57 +2652,42 @@ public final class Language {
   }
 
   /**
-   * Round to a given precision and return a Double
+   * Computes the radians of a number.
    *
-   * @param num the number to round. Type: Number/Double
+   * @param value The operand to radians. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Radians(Expr value) {
+    return Fn.apply("radians", value);
+  }
+
+
+  /**
+   * Round to a given precision
+   *
+   * @param num the number to round. Type: Number
    * @param precision where to round
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    * @see #Value(double)
    */
-  public static Expr RoundDouble(Expr num, Expr precision) {
-    return Fn.apply("rounddouble",  num, "precision", precision);
+  public static Expr Round(Expr num, Expr precision) {
+    return Fn.apply("round",  num, "precision", precision);
   }
 
   /**
-   * Round to a given precision and return a Double
+   * Round to a given precision
    *
-   * @param num the number to round to 2 decimal places. Type: Number/Double
+   * @param num the number to round to 2 decimal places. Type: Number
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    * @see #Value(double)
    */
-  public static Expr RoundDouble(Expr num) {
-    return Fn.apply("rounddouble",  num);
-  }
-
-  /**
-   * Round to a given precision and return a Long
-   *
-   * @param num the number to round. Type: Number/Long
-   * @param precision where to round
-   * @return a new {@link Expr} instance
-   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
-   * @see #Value(long)
-   * @see #Value(double)
-   */
-  public static Expr RoundLong(Expr num, Expr precision) {
-    return Fn.apply("roundlong",  num, "precision", precision);
-  }
-
-  /**
-   * Round to a given precision and return a Long
-   *
-   * @param num the number to round to 2 decimal places. Type: Number/Long
-   * @return a new {@link Expr} instance
-   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
-   * @see #Value(long)
-   * @see #Value(double)
-   */
-  public static Expr RoundLong(Expr num) {
-    return Fn.apply("roundlong",  num);
+  public static Expr Round(Expr num) {
+    return Fn.apply("round",  num);
   }
 
   /**
@@ -2669,12 +2704,23 @@ public final class Language {
   /**
    * Computes the Sin of a number.
    *
-   * @param value The operand to log. Type: Number
+   * @param value The operand to sin. Type: Number
    * @return a {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    */
   public static Expr Sin(Expr value) {
     return Fn.apply("sin", value);
+  }
+
+  /**
+   * Computes the Sinh of a number.
+   *
+   * @param value The operand to hyperbolic sine. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Sinh(Expr value) {
+    return Fn.apply("sinh", value);
   }
 
   /**
@@ -2709,6 +2755,7 @@ public final class Language {
   public static Expr Subtract(Expr... values) {
     return Subtract(ImmutableList.copyOf(values));
   }
+
   /**
    * Computes the tangent of a numbers.
    *
@@ -2721,53 +2768,39 @@ public final class Language {
   }
 
   /**
-   * Truncate to a given precision and return a Double
+   * Computes the hyperbolic tangent of a numbers.
    *
-   * @param num the number to truncate. Type: Number/Double
+   * @param value The operand to tanh. Type: Number
+   * @return a {@link Expr} instance
+   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
+   */
+  public static Expr Tanh(Expr value) {
+    return Fn.apply("tanh", value);
+  }
+
+  /**
+   * Truncate to a given precision
+   *
+   * @param num the number to truncate. Type: Number
    * @param precision where to truncate, default 2
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    */
-  public static Expr TruncDouble(Expr num, Expr precision) {
-    return Fn.apply("truncdouble",  num, "precision", precision);
+  public static Expr Trunc(Expr num, Expr precision) {
+    return Fn.apply("trunc",  num, "precision", precision);
   }
 
   /**
-   * Truncate to a given precision and return a Double
+   * Truncate to a given precision
    *
    * @param num the number to truncate to 2 decimal places. Type: Number
    * @return a new {@link Expr} instance
    * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
    * @see #Value(long)
    */
-  public static Expr TruncDouble(Expr num) {
-    return Fn.apply("truncdouble",  num);
-  }
-
-  /**
-   * Truncate to a given precision and return a Long
-   *
-   * @param num the number to truncate. Type: Number/Long
-   * @param precision where to truncate, default 2
-   * @return a new {@link Expr} instance
-   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
-   * @see #Value(long)
-   */
-  public static Expr TruncLong(Expr num, Expr precision) {
-    return Fn.apply("trunclong",  num, "precision", precision);
-  }
-
-  /**
-   * Truncate to a given precision and return a Long
-   *
-   * @param num the number to truncate to 2 decimal places. Type: Number/Long
-   * @return a new {@link Expr} instance
-   * @see <a href="https://fauna.com/documentation/queries#mathematical-functions">FaunaDB Mathematical Functions</a>
-   * @see #Value(long)
-   */
-  public static Expr TruncLong(Expr num) {
-    return Fn.apply("trunclong",  num);
+  public static Expr Trunc(Expr num) {
+    return Fn.apply("trunc",  num);
   }
 
   /**
