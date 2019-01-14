@@ -1,21 +1,22 @@
 package faunadb
 
+import java.net.ConnectException
+import java.util.concurrent.TimeoutException
+
 import com.codahale.metrics.MetricRegistry
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.faunadb.common.Connection
 import faunadb.errors._
 import faunadb.query.Expr
-import faunadb.values.{ ArrayV, NullV, Value }
-import java.net.ConnectException
-import java.util.concurrent.TimeoutException
+import faunadb.values.{ArrayV, NullV, Value}
 import io.netty.util.CharsetUtil.UTF_8
-import org.asynchttpclient.{ AsyncHttpClient, Response }
+import org.asynchttpclient.{AsyncHttpClient, Response}
+
 import scala.collection.JavaConverters._
 import scala.compat.java8.FutureConverters._
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.control.NonFatal
+import scala.concurrent.{ExecutionContext, Future}
 
 /** Companion object to the FaunaClient class. */
 object FaunaClient {
@@ -93,12 +94,21 @@ class FaunaClient(connection: Connection) {
     *         [[faunadb.values.Field]] API. If the query fails, failed
     *         future is returned.
     */
-  def query(expr: Expr)(implicit ec: ExecutionContext): Future[Value] =
-    connection.post("", json.valueToTree(expr)).toScala.map { resp =>
-      handleQueryErrors(resp)
-      val rv = json.treeToValue[Value](parseResponseBody(resp).get("resource"), classOf[Value])
+  def query(expr: Expr)(implicit ec: ExecutionContext): Future[Value] = {
+    def handleSuccessResponse(response: Response): Future[Value] = Future {
+      val rv = json.treeToValue[Value](parseResponseBody(response).get("resource"), classOf[Value])
       if (rv eq null) NullV else rv
-    }.recover(handleNetworkExceptions)
+    }
+
+    val response = connection.post("", json.valueToTree(expr)).toScala
+
+    response
+      .flatMap {
+        case successResponse if successResponse.getStatusCode < 300 => handleSuccessResponse(successResponse)
+        case errorResponse => handleErrorResponse(errorResponse)
+      }
+      .recover(handleNetworkExceptions)
+  }
 
   /**
     * Issues multiple queries as a single transaction.
@@ -110,12 +120,21 @@ class FaunaClient(connection: Connection) {
     *         value using the [[faunadb.values.Field]] API. If *any*
     *         query fails, a failed future is returned.
     */
-  def query(exprs: Iterable[Expr])(implicit ec: ExecutionContext): Future[IndexedSeq[Value]] =
-    connection.post("", json.valueToTree(exprs)).toScala.map { resp =>
-      handleQueryErrors(resp)
-      val arr = json.treeToValue[Value](parseResponseBody(resp).get("resource"), classOf[Value])
+  def query(exprs: Iterable[Expr])(implicit ec: ExecutionContext): Future[IndexedSeq[Value]] = {
+    def handleSuccessResponse(response: Response): Future[IndexedSeq[Value]] = Future {
+      val arr = json.treeToValue[Value](parseResponseBody(response).get("resource"), classOf[Value])
       arr.asInstanceOf[ArrayV].elems
-    }.recover(handleNetworkExceptions)
+    }
+
+    val response = connection.post("", json.valueToTree(exprs)).toScala
+
+    response
+      .flatMap {
+        case successResponse if successResponse.getStatusCode < 300 => handleSuccessResponse(successResponse)
+        case errorResponse => handleErrorResponse(errorResponse)
+      }
+      .recover(handleNetworkExceptions)
+  }
 
   /**
     * Creates a new scope to execute session queries. Queries submitted within the session scope will be
@@ -150,35 +169,37 @@ class FaunaClient(connection: Connection) {
       throw new TimeoutException(ex.getMessage)
   }
 
-  private def handleQueryErrors(response: Response) =
-    response.getStatusCode match {
-      case x if x >= 300 =>
-        try {
-          val errors = parseResponseBody(response).get("errors").asInstanceOf[ArrayNode]
-          val parsedErrors = errors.iterator().asScala.map {
-            json.treeToValue(_, classOf[QueryError])
-          }.toIndexedSeq
-          val error = QueryErrorResponse(x, parsedErrors)
-          x match {
-            case 400 => throw new BadRequestException(error)
-            case 401 => throw new UnauthorizedException(error)
-            case 403 => throw new PermissionDeniedException(error)
-            case 404 => throw new NotFoundException(error)
-            case 500 => throw new InternalException(error)
-            case 503 => throw new UnavailableException(error)
-            case _   => throw new UnknownException(error)
-          }
-        } catch {
-          case e: FaunaException => throw e
-          case NonFatal(_)       => response.getStatusCode match {
-            case 503   => throw new UnavailableException("Service Unavailable: Unparseable response.")
-            case s @ _ => throw new UnknownException(s"Unparseable service $s response.")
-          }
-        }
-      case _ =>
+  private def handleErrorResponse(response: Response)(implicit ec: ExecutionContext): Future[Nothing] = {
+    def parseError(response: Response): Future[QueryErrorResponse] = Future {
+      val errors = parseResponseBody(response).get("errors").asInstanceOf[ArrayNode]
+      val parsedErrors = errors.iterator().asScala.map {json.treeToValue(_, classOf[QueryError])}.toIndexedSeq
+      val error = QueryErrorResponse(response.getStatusCode, parsedErrors)
+      error
+    }.recoverWith {
+      case e: FaunaException => Future.failed(e)
+      case _ if response.getStatusCode == 503 => Future.failed(new UnavailableException("Service Unavailable: Unparseable response."))
+      case unknown => Future.failed(new UnknownException(s"Unparseable service $unknown response."))
     }
 
-  private def parseResponseBody(response: Response) = {
+    def parseErrorAndFailWith(response: Response)(fun: QueryErrorResponse => FaunaException): Future[Nothing] = {
+      parseError(response).flatMap { errors =>
+        val exception = fun(errors)
+        Future.failed(exception)
+      }
+    }
+
+    response.getStatusCode match {
+      case 400 => parseErrorAndFailWith(response)(new BadRequestException(_))
+      case 401 => parseErrorAndFailWith(response)(new UnauthorizedException(_))
+      case 403 => parseErrorAndFailWith(response)(new PermissionDeniedException(_))
+      case 404 => parseErrorAndFailWith(response)(new NotFoundException(_))
+      case 500 => parseErrorAndFailWith(response)(new InternalException(_))
+      case 503 => parseErrorAndFailWith(response)(new UnavailableException(_))
+      case _   => parseErrorAndFailWith(response)(new UnknownException(_))
+    }
+  }
+
+  private def parseResponseBody(response: Response): JsonNode = {
     val body = response.getResponseBody(UTF_8)
     json.readTree(body)
   }
